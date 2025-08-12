@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     @field_validator('NEO4J_USERNAME', 'NEO4J_PASSWORD', 'AURA_INSTANCEID', 'AURA_INSTANCENAME', 
         'REDIS_USERNAME', 'REDIS_PASSWORD', 'OLLAMA_LLM_MODEL', 'OLLAMA_EMBED_MODEL')
     def validate_alphanumeric_and_underscore(cls, v, field):
-        if not all(char.isalnum() or char in '_-:' for char in v):
+        if not all(char.isalnum() or char in '_-:.' for char in v):
             raise ValueError(
                 f'{field.field_name} must contain only alphanumeric characters and underscores')
         return v
@@ -48,12 +48,26 @@ class Settings(BaseSettings):
         return value
         
 
-try:
-    config = Settings()
-except ValidationError as e:
-    print(f'Environment variable validation error: {e}')
-    config = BaseSettings()
-    exit()
+class LlamaSettings(Settings):
+    OLLAMA_LLM_MODEL: str = "llama3.2:3b"
+    OLLAMA_EMBED_MODEL: str = "llama3.2:3b"
+
+class LocalNeo4jSettings(LlamaSettings):
+    NEO4J_URI: str = "bolt://localhost:7687"
+    NEO4J_PASSWORD: str = "testpass"
+
+# Default configuration (original system)
+# try:
+#     config = Settings()
+# except ValidationError as e:
+#     print(f'Environment variable validation error: {e}')
+#     config = BaseSettings()
+#     exit()
+
+# Alternative configurations for testing/development
+# Uncomment one of these to use instead of default:
+# config = LlamaSettings()           # Use Llama 3.2 instead of DeepSeek
+config = LocalNeo4jSettings()     # Use local Neo4j container for demo
 
 
 def test():
