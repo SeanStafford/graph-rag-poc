@@ -1,0 +1,115 @@
+Graph RAG System Test Results
+Timestamp: 2025-08-12 12:07:08
+============================================================
+
+>>> Graph RAG System Test Suite <<<
+     Testing all components...
+
+============================================================
+Ollama LLM Connection Test
+============================================================
+Testing Ollama with model: llama3.2:3b
+Host: localhost:11434
+Sending test query (may take 30-60 seconds for first request)...
+✓ SUCCESS: SAP HANA (High-Performance Analytics Engine) is a relational database management system that provides real-time analytics, reporting, and data processing capabilities to support business intelligence and big data applications.
+
+✓ Ollama LLM Connection Test - PASSED
+
+============================================================
+Neo4j Database Connection Test
+============================================================
+Testing Neo4j connection to: bolt://localhost:7687
+Username: neo4j
+✓ SUCCESS: Neo4j is working!
+
+✓ Neo4j Database Connection Test - PASSED
+
+============================================================
+Document Loading & Basic RAG Test
+============================================================
+[TIMEOUT] Document Loading & Basic RAG Test - TIMEOUT (>2min)
+
+============================================================
+Full Graph RAG System Test
+============================================================
+Testing full Graph RAG system...
+LLM: llama3.2:3b
+Neo4j: bolt://localhost:7687
+✓ Loaded 134 document chunks from PDF
+✓ Testing with 10 chunks for speed (out of 134 total)
+✗ Graph RAG test failed: Could not use APOC procedures. Please ensure the APOC plugin is installed in Neo4j and that 'apoc.meta.data()' is allowed in Neo4j configuration 
+
+STDERR:
+neo4j.exceptions.GqlError: {gql_status: 42N08} {gql_status_description: error: syntax error or access rule violation - no such procedure. The procedure apoc.meta.data() was not found. Verify that the spelling is correct.} {message: 42N08: The procedure apoc.meta.data() was not found. Verify that the spelling is correct.} {diagnostic_record: {'_classification': 'CLIENT_ERROR', 'OPERATION': '', 'OPERATION_CODE': '0', 'CURRENT_SCHEMA': '/'}} {raw_classification: CLIENT_ERROR}
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/llama_index/graph_stores/neo4j/base.py", line 75, in __init__
+    self.refresh_schema()
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/llama_index/graph_stores/neo4j/base.py", line 209, in refresh_schema
+    node_properties = [el["output"] for el in self.query(node_properties_query)]
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/llama_index/graph_stores/neo4j/base.py", line 262, in query
+    data, _, _ = self._driver.execute_query(
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/neo4j/_sync/driver.py", line 969, in execute_query
+    return session._run_transaction(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/neo4j/_sync/work/session.py", line 581, in _run_transaction
+    result = transaction_function(tx, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/neo4j/_work/query.py", line 144, in wrapped
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/neo4j/_sync/driver.py", line 1305, in _work
+    res = tx.run(query, parameters)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/neo4j/_sync/work/transaction.py", line 195, in run
+    result._tx_ready_run(query, parameters)
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/neo4j/_sync/work/result.py", line 175, in _tx_ready_run
+    self._run(query, parameters, None, None, None, None, None, None)
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/neo4j/_sync/work/result.py", line 231, in _run
+    self._attach()
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/neo4j/_sync/work/result.py", line 425, in _attach
+    self._connection.fetch_message()
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/neo4j/_sync/io/_common.py", line 184, in inner
+    func(*args, **kwargs)
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/neo4j/_sync/io/_bolt.py", line 994, in fetch_message
+    res = self._process_message(tag, fields)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/neo4j/_sync/io/_bolt5.py", line 1204, in _process_message
+    response.on_failure(summary_metadata or {})
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/neo4j/_sync/io/_common.py", line 254, in on_failure
+    raise self._hydrate_error(metadata)
+neo4j.exceptions.ClientError: {code: Neo.ClientError.Procedure.ProcedureNotFound} {message: There is no procedure with the name `apoc.meta.data` registered for this database instance. Please ensure you've spelled the procedure name correctly and that the procedure is properly deployed.}
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/sean/OllamaGraphRAGPoC/tests/test_graph_rag.py", line 40, in <module>
+    graph_store = Neo4jGraphStore(
+                  ^^^^^^^^^^^^^^^^
+  File "/home/sean/.cache/pypoetry/virtualenvs/ollama-rag-GAnrodbJ-py3.12/lib/python3.12/site-packages/llama_index/graph_stores/neo4j/base.py", line 77, in __init__
+    raise ValueError(
+ValueError: Could not use APOC procedures. Please ensure the APOC plugin is installed in Neo4j and that 'apoc.meta.data()' is allowed in Neo4j configuration 
+
+✗ Full Graph RAG System Test - FAILED (exit code: 1)
+
+============================================================
+TEST SUMMARY
+============================================================
+✓ PASS - Ollama LLM Connection Test
+✓ PASS - Neo4j Database Connection Test
+✗ FAIL - Document Loading & Basic RAG Test
+✗ FAIL - Full Graph RAG System Test
+
+Overall: 2/4 tests passed
+!!! Some components need attention before proceeding.
+
+DIAGNOSIS:
+- Local Neo4j container lacks APOC plugin required for Graph RAG
+- Solution: Deploy to cloud with managed Neo4j service or install APOC locally
+- Recommendation: Proceed with Azure cloud deployment
+
+Log saved to: tests/test_results.log
