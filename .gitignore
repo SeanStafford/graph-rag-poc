@@ -1,3 +1,18 @@
-/backup
+# Python cache and build files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
 .env
+.venv
+env/
+venv/
+
+# IDE and OS files
+.vscode/
+.DS_Store
 **/.DS_Store
+
+# Original entries
+/backup
